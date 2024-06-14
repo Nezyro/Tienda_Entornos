@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Carrito de Compras{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Carrito de Compras</h2>
+    
+    {% if current_user.is_authenticated %}
+        {% if current_user.carritos %}
+            {% set carrito = current_user.carritos[0] %}
+            {% if carrito.items_carrito %}
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in carrito.items_carrito %}
+                            <tr>
+                                <td>{{ item.producto.nombre }}</td>
+                                <td>{{ item.producto.descripcion }}</td>
+                                <td>${{ item.producto.precio }}</td>
+                                <td>1</td> <!-- Aquí puedes agregar funcionalidad para cambiar la cantidad -->
+                                <td>${{ item.producto.precio }}</td>
+                                <td>
+                                    <!-- Aquí puedes agregar acciones como eliminar el producto del carrito -->
+                                    <form action="{{ url_for('rutas.eliminar_item_carrito', item_id=item.id_item_carrito) }}" method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                            <td><strong>${{ carrito.items_carrito | sum(attribute='producto.precio') }}</strong></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <form action="{{ url_for('rutas.comprobar_pago') }}" method="post" >
+                    <button class="mt-auto btn btn-primary btn-block" type="submit">Comprobar Compra</button>
+                </form>
+            {% else %}
+                <p>Tu carrito está vacío.</p>
+            {% endif %}
+        {% else %}
+            <p>Tu carrito está vacío.</p>
+        {% endif %}
+    {% else %}
+        <p>Por favor, <a href="{{ url_for('rutas.iniciar') }}">inicia sesión</a> para ver tu carrito.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Compra Confirmada - Mi Tienda{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1>Compra Confirmada</h1>
+    <p>¡Gracias por tu compra! Tu pedido ha sido confirmado.</p>
+    <!-- Agrega aquí cualquier otra información adicional -->
+     <a href="{{ url_for('rutas.index') }}">Volver a la página principal</a>
+{% endblock %}

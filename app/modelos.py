@@ -1,12 +1,13 @@
-from flask_sqlalchemy import SQLAlchemy
+from . import db
+from flask_login import UserMixin
 
-db = SQLAlchemy()
-
-class Usuario(db.Model):
+class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuarios'
-    correo = db.Column(db.String(120), primary_key=True, unique=True, nullable=False)
-    nombre = db.Column(db.String(100), nullable=False)
-    contraseña = db.Column(db.String(60), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    correo = db.Column(db.String(150), unique=True, nullable=False)
+    nombre = db.Column(db.String(150), nullable=False)
+    contraseña = db.Column(db.String(150), nullable=False)
+    is_admin = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return f"<Usuario {self.nombre}>"
@@ -15,7 +16,6 @@ class Categoria(db.Model):
     __tablename__ = 'categorias'
     id_categoria = db.Column(db.Integer, primary_key=True)
     nombre_categoria = db.Column(db.String(100), nullable=False)
-    descripcion_categoria = db.Column(db.String(255))
 
     def __repr__(self):
         return f"<Categoria {self.nombre_categoria}>"
@@ -50,9 +50,11 @@ class ItemCarrito(db.Model):
     id_item_carrito = db.Column(db.Integer, primary_key=True)
     carrito_id = db.Column(db.Integer, db.ForeignKey('carritos.id'), nullable=False)
     producto_id = db.Column(db.Integer, db.ForeignKey('productos.id_producto'), nullable=False)
-    
+    cantidad = db.Column(db.Integer, nullable=False, default=1)  # Nuevo atributo cantidad
+
     carrito = db.relationship('Carrito', backref=db.backref('items_carrito', lazy=True))
     producto = db.relationship('Producto', backref=db.backref('items_carrito', lazy=True))
 
     def __repr__(self):
         return f"<ItemCarrito {self.id_item_carrito}>"
+

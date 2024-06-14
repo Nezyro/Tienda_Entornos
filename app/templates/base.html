@@ -14,9 +14,19 @@
       <nav>
         <ul class="nav">
           <li class="nav-item"><a class="nav-link text-white" href="/">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link text-white" href="/productos">Productos</a></li>
-          <li class="nav-item"><a class="nav-link text-white" href="/contacto">Contacto</a></li>
-          <!-- Agrega más elementos de menú si es necesario -->
+          {% if current_user.is_authenticated %}
+          {% if not current_user.is_admin %}
+          <li class="nav-item"><a class="nav-link text-white" href="/carrito">Carrito</a></li>
+          {% endif %}
+          <li class="nav-item"><a class="nav-link text-white" href="/cerrar_sesion">Cerrar Sesión</a></li>
+          {% if current_user.is_admin %}
+          <li class="nav-item"><a class="nav-link text-white" href="/registro_categoria">Registro de Categoría</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="/registro_producto">Registro de Producto</a></li>
+          {% endif %}
+          {% else %}
+          <li class="nav-item"><a class="nav-link text-white" href="/registro">Registrarse</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="/iniciar">Iniciar Sesión</a></li>
+          {% endif %}
         </ul>
       </nav>
     </div>

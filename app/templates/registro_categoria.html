@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Crear Categoría{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <h2>Crear Categoría</h2>
+    <form method="post">
+      <div class="form-group">
+        <label for="nombre_categoria">Nombre de la Categoría</label>
+        <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Crear Categoría</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

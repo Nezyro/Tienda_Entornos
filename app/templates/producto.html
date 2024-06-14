@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Detalles del Producto - {{ producto.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2">
+      <div class="card">
+        <div class="row no-gutters">
+          <div class="col-lg-4">
+            <img src="{{ url_for('static', filename=producto.imagen) }}" class="card-img-top img-fluid" alt="{{ producto.nombre }}">
+          </div>
+          <div class="col-lg-8">
+            <div class="card-body">
+              <h3 class="card-title">{{ producto.nombre }}</h3>
+              <p class="card-text">{{ producto.descripcion }}</p>
+              <h5 class="card-subtitle mb-2 text-muted">${{ producto.precio }}</h5>
+
+              {% if current_user.is_admin %}
+              <form action="{{ url_for('rutas.eliminar_producto', producto_id=producto.id_producto) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este producto?');">
+                <button type="submit" class="mt-auto btn btn-danger btn-block">Eliminar producto</button>
+              </form>
+              {% else %}
+              <form action="/agregar_al_carrito/{{ producto.id_producto }}" method="POST">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Agregar al Carrito</button>
+              </form>
+              {% endif %}
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
