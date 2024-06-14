@@ -65,10 +65,10 @@ def cerrar_sesion():
     flash('Has cerrado sesión correctamente', 'success')
     return redirect(url_for('rutas.index'))
 
-@bp.route('/carrito')
+@bp.route('/carrito', methods=['GET', 'POST'])
 @login_required
 def carrito():
-    carrito = current_user.carritos[0] if current_user.carritos else None
+    carrito = Carrito.query.filter_by(usuario_correo=current_user.correo).first()
     return render_template('carrito.html', carrito=carrito, current_user=current_user)
 
 @bp.route('/producto/<int:producto_id>')
@@ -119,28 +119,27 @@ def registro_producto():
         precio = float(request.form['precio'])
         imagen = request.files['imagen']
 
+        # Crear el nuevo producto sin establecer la imagen todavía
+        nuevo_producto = Producto(nombre=nombre, descripcion=descripcion, categoria_id=categoria_id, stock=stock, precio=precio)
+
+        # Agregar y confirmar el nuevo producto para obtener su ID
+        db.session.add(nuevo_producto)
+        db.session.commit()
+        id_producto = nuevo_producto.id_producto  # Obtener el ID después de confirmar
+
         # Verificar si se proporcionó una imagen, si no, usar la imagen predeterminada
         if not imagen or imagen.filename == '':
             # Establecer la ruta predeterminada para la imagen del producto
             imagen_path = 'imgs/productos/default_producto.png'  # Cambia esto con la ruta real de tu imagen predeterminada
         else:
-            # Obtener el ID del nuevo producto después de guardarlo en la base de datos
-            nuevo_producto = Producto(nombre=nombre, descripcion=descripcion, categoria_id=categoria_id, stock=stock, precio=precio)
-            db.session.add(nuevo_producto)
-            db.session.commit()
-
-            # Ahora puedes acceder al ID del producto recién guardado
-            id_producto = nuevo_producto.id_producto
-
             # Guardar la imagen con el nombre del ID del producto
             imagen_extension = os.path.splitext(imagen.filename)[1]  # Obtener la extensión de la imagen
             imagen_filename = f"{id_producto}{imagen_extension}"  # Nombre de la imagen con el ID del producto y su extensión
             imagen_path = f'imgs/productos/{imagen_filename}'
             imagen.save(os.path.join(bp.root_path, 'static', imagen_path))
 
-        # Crear el nuevo producto con la imagen establecida
-        nuevo_producto = Producto(nombre=nombre, descripcion=descripcion, categoria_id=categoria_id, stock=stock, precio=precio, imagen=imagen_path)
-        db.session.add(nuevo_producto)
+        # Actualizar el producto con la ruta de la imagen y guardar los cambios
+        nuevo_producto.imagen = imagen_path
         db.session.commit()
 
         flash('Producto registrado exitosamente!', 'success')
@@ -148,7 +147,6 @@ def registro_producto():
     
     categorias = Categoria.query.all()
     return render_template('registro_producto.html', categorias=categorias, current_user=current_user)
-
 
 @bp.route('/comprobar_pago', methods=['GET', 'POST'])
 @login_required

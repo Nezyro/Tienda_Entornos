@@ -27,10 +27,9 @@
                                 <td>{{ item.producto.nombre }}</td>
                                 <td>{{ item.producto.descripcion }}</td>
                                 <td>${{ item.producto.precio }}</td>
-                                <td>1</td> <!-- Aquí puedes agregar funcionalidad para cambiar la cantidad -->
+                                <td>1</td> 
                                 <td>${{ item.producto.precio }}</td>
                                 <td>
-                                    <!-- Aquí puedes agregar acciones como eliminar el producto del carrito -->
                                     <form action="{{ url_for('rutas.eliminar_item_carrito', item_id=item.id_item_carrito) }}" method="post" style="display: inline;">
                                         <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                                     </form>
@@ -58,4 +57,4 @@
         <p>Por favor, <a href="{{ url_for('rutas.iniciar') }}">inicia sesión</a> para ver tu carrito.</p>
     {% endif %}
 </div>
-{% endblock %}
+{% endblock %}
