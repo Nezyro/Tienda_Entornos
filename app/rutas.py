@@ -19,7 +19,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or not current_user.is_admin:
-            abort(403)  # Forbidden
+            abort(403)  
         return f(*args, **kwargs)
     return decorated_function
 
@@ -65,10 +65,10 @@ def cerrar_sesion():
     flash('Has cerrado sesión correctamente', 'success')
     return redirect(url_for('rutas.index'))
 
-@bp.route('/carrito', methods=['GET', 'POST'])
+@bp.route('/carrito')
 @login_required
 def carrito():
-    carrito = Carrito.query.filter_by(usuario_correo=current_user.correo).first()
+    carrito = current_user.carritos[0] if current_user.carritos else None
     return render_template('carrito.html', carrito=carrito, current_user=current_user)
 
 @bp.route('/producto/<int:producto_id>')
@@ -147,6 +147,7 @@ def registro_producto():
     
     categorias = Categoria.query.all()
     return render_template('registro_producto.html', categorias=categorias, current_user=current_user)
+
 
 @bp.route('/comprobar_pago', methods=['GET', 'POST'])
 @login_required
